@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cartoon - Fun Game for You</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    /* Reset and base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #ff99cc, #ffccff);
+      font-family: 'Poppins', sans-serif;
+      color: #3a0ca3;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      background: rgba(255 204 255 / 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 10px rgba(58,12,163,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      z-index: 1000;
+    }
+    .logo {
+      font-weight: 700;
+      font-size: 1.75rem;
+      background: linear-gradient(45deg, #7b2ff7, #f107a3);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      user-select: none;
+      letter-spacing: 1.5px;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-size: 1.5rem;
+      color: #7b2ff7;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.3s ease;
+    }
+    .header-right:hover {
+      color: #f107a3;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 48px;
+      max-width: 960px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    h1 {
+      font-weight: 700;
+      font-size: 2.75rem;
+      margin-bottom: 16px;
+      text-align: center;
+      letter-spacing: 1.2px;
+      user-select: none;
+    }
+    p.description {
+      max-width: 600px;
+      text-align: center;
+      font-weight: 500;
+      color: #68217a;
+      margin-bottom: 40px;
+      user-select: none;
+      line-height: 1.4;
+      font-size: 1rem;
+    }
+
+    #start-button {
+      background: linear-gradient(135deg, #7b2ff7, #f107a3);
+      color: white;
+      border: none;
+      border-radius: 32px;
+      padding: 14px 48px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(123, 47, 247, 0.45);
+      user-select: none;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      margin-bottom: 40px;
+      border: 2px solid transparent;
+      outline-offset: 4px;
+    }
+    #start-button:hover,
+    #start-button:focus {
+      background: linear-gradient(135deg, #f107a3, #7b2ff7);
+      outline: none;
+      transform: scale(1.05);
+    }
+    #start-button:active {
+      transform: scale(0.98);
+    }
+
+    #game-container {
+      position: relative;
+      width: 320px;
+      height: 480px;
+      background: #fff0f6;
+      border-radius: 24px;
+      box-shadow: 0 12px 36px rgba(123, 47, 247, 0.2);
+      overflow: hidden;
+      user-select: none;
+    }
+
+    #character {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      cursor: pointer;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f72585, #720026);
+      box-shadow:
+        0 0 0 6px #ffccf9,
+        0 8px 16px rgba(247, 37, 133, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease;
+      will-change: transform;
+      opacity: 0.85;
+    }
+
+    #character:hover {
+      transform: scale(1.1);
+      box-shadow:
+        0 0 0 8px #ffccf9,
+        0 10px 22px rgba(247, 37, 133, 0.7);
+    }
+
+    #character img {
+      width: 48px;
+      height: 48px;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    #scoreboard {
+      margin-top: 24px;
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      max-width: 360px;
+      font-weight: 700;
+      color: #720026;
+      user-select: none;
+      font-size: 1.2rem;
+    }
+
+    #scoreboard div {
+      background: #f9d6f2;
+      border-radius: 16px;
+      padding: 12px 24px;
+      box-shadow: 0 4px 10px rgba(247, 37, 133, 0.15);
+      min-width: 110px;
+      text-align: center;
+    }
+
+    #last-scores {
+      margin-top: 32px;
+      width: 100%;
+      max-width: 360px;
+      background: #fce4f3;
+      color: #720026;
+      padding: 16px 24px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(247, 37, 133, 0.12);
+      font-weight: 600;
+      user-select: none;
+    }
+    #last-scores h2 {
+      margin: 0 0 12px 0;
+      font-weight: 700;
+      font-size: 1.25rem;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+    #last-scores ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+    #last-scores ul li {
+      background: white;
+      box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
+      padding: 8px 16px;
+      border-radius: 12px;
+      min-width: 48px;
+      text-align: center;
+      font-size: 1.1rem;
+      color: #411364;
+    }
+
+    /* Responsive and spacing */
+    @media (max-width: 480px) {
+      #game-container {
+        width: 280px;
+        height: 420px;
+        border-radius: 18px;
+      }
+      #character {
+        width: 64px;
+        height: 64px;
+      }
+      #character img {
+        width: 40px;
+        height: 40px;
+      }
+      #scoreboard {
+        max-width: 280px;
+        font-size: 1rem;
+      }
+      #start-button {
+        padding: 12px 36px;
+        font-size: 1.1rem;
+        margin-bottom: 32px;
+      }
+      #last-scores {
+        max-width: 280px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo" aria-label="Cartoon game site logo">Game</div>
+    <div class="header-right" id="info-button" tabindex="0" role="button" aria-pressed="false" aria-label="Game instructions">
+      <span class="material-icons" aria-hidden="true">info</span>
+    </div>
+  </header>
+  <main>
+    <h1>Catch the Cartoon!</h1>
+    <p class="description">Try to catch the moving cartoon character as many times as you can before time runs out. Click on the character to score points!</p>
+
+    <button id="start-button" aria-label="Start the cartoon catch game">
+      Start Game
+    </button>
+
+    <div id="game-container" aria-live="polite" aria-label="Cartoon catch game area" aria-hidden="true">
+      <div id="character" role="button" aria-label="Cartoon character to catch" tabindex="0">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d0e29c05-130e-4c46-87fc-e8591832657f.png" alt="Cute pink cartoon bunny icon" />
+      </div>
+    </div>
+
+    <div id="scoreboard" aria-live="polite" aria-atomic="true" aria-hidden="true">
+      <div id="score" aria-label="Current score">Score: 0</div>
+      <div id="timer" aria-label="Time remaining">Time: 30s</div>
+    </div>
+
+    <section id="last-scores" aria-live="polite" aria-atomic="true" aria-label="Last three game scores">
+      <h2>Last 3 Games Scores:</h2>
+      <ul id="scores-list" aria-describedby="lastScoresDesc">
+       <!-- Scores will be dynamically inserted here -->
+      </ul>
+    </section>
+  </main>
+
+  <script>
+    // Game variables
+    const gameContainer = document.getElementById('game-container');
+    const character = document.getElementById('character');
+    const scoreDisplay = document.getElementById('score');
+    const timerDisplay = document.getElementById('timer');
+    const infoButton = document.getElementById('info-button');
+    const startButton = document.getElementById('start-button');
+    const scoresList = document.getElementById('scores-list');
+
+    let score = 0;
+    let timeLeft = 30; // seconds
+    let gameInterval = null;
+    let timerInterval = null;
+    const moveDuration = 1500; // ms duration of each move
+
+    // Move character to a random position inside the container
+    function moveCharacter() {
+      const containerRect = gameContainer.getBoundingClientRect();
+      const charRect = character.getBoundingClientRect();
+      const maxX = containerRect.width - charRect.width;
+      const maxY = containerRect.height - charRect.height;
+      const randomX = Math.random() * maxX;
+      const randomY = Math.random() * maxY;
+
+      character.style.transform = `translate(${randomX}px, ${randomY}px)`;
+    }
+
+    // Increase score on character catch with animation
+    function catchCharacter() {
+      if (timeLeft <= 0) return; // no scoring after end
+
+      score++;
+      scoreDisplay.textContent = `Score: ${score}`;
+
+      character.style.transition = 'transform 0.1s ease';
+      // Add scale pop effect
+      character.style.transform += ' scale(1.25)';
+      setTimeout(() => {
+        character.style.transition = 'transform 0.3s ease';
+        moveCharacter();
+      }, 150);
+    }
+
+    // Countdown timer for the game
+    function countdown() {
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        clearInterval(gameInterval);
+        alert(`Time's up! You scored ${score} point${score !== 1 ? 's' : ''}. Thanks for playing!`);
+        saveScore(score);
+        updateLastScoresUI();
+        endGame();
+        return;
+      }
+      timeLeft--;
+      timerDisplay.textContent = `Time: ${timeLeft}s`;
+    }
+
+    // Save current score to localStorage - keep last 3
+    function saveScore(newScore) {
+      const storageKey = 'cartoonLastScores';
+      let scores = JSON.parse(localStorage.getItem(storageKey)) || [];
+      scores.unshift(newScore); // add new score at front
+      if (scores.length > 3) scores = scores.slice(0, 3);
+      localStorage.setItem(storageKey, JSON.stringify(scores));
+    }
+
+    // Load last scores from localStorage
+    function loadLastScores() {
+      const storageKey = 'cartoonLastScores';
+      let scores = JSON.parse(localStorage.getItem(storageKey));
+      return Array.isArray(scores) ? scores : [];
+    }
+
+    // Update the last scores UI list
+    function updateLastScoresUI() {
+      const scores = loadLastScores();
+      scoresList.innerHTML = '';
+      if(scores.length === 0){
+        scoresList.innerHTML = '<li>No games played yet</li>';
+        return;
+      }
+      scores.forEach((score, index) => {
+        const li = document.createElement('li');
+        li.textContent = score;
+        li.setAttribute('aria-label', `Game ${index + 1} score: ${score}`);
+        scoresList.appendChild(li);
+      });
+    }
+
+    // Start game
+    function startGame() {
+      score = 0;
+      timeLeft = 30;
+      scoreDisplay.textContent = `Score: 0`;
+      timerDisplay.textContent = `Time: 30s`;
+
+      startButton.style.display = 'none';
+      gameContainer.setAttribute('aria-hidden', 'false');
+      timerDisplay.parentElement.setAttribute('aria-hidden', 'false');
+
+      moveCharacter();
+      gameInterval = setInterval(moveCharacter, moveDuration);
+      timerInterval = setInterval(countdown, 1000);
+    }
+
+    // End game - reset UI and show start button
+    function endGame() {
+      startButton.style.display = 'inline-block';
+      gameContainer.setAttribute('aria-hidden', 'true');
+      timerDisplay.parentElement.setAttribute('aria-hidden', 'true');
+      score = 0;
+      timeLeft = 30;
+      scoreDisplay.textContent = `Score: 0`;
+      timerDisplay.textContent = `Time: 30s`;
+      character.style.transform = 'translate(0, 0)';
+    }
+
+    // Accessibility keyboard support for character catch
+    character.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        catchCharacter();
+      }
+    });
+
+    character.addEventListener('click', catchCharacter);
+
+    // Info button instructions
+    infoButton.addEventListener('click', () => {
+      alert("Catch the cartoon character by clicking or tapping it! Score as many points as possible before the 30-second timer runs out.");
+    });
+    infoButton.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        infoButton.click();
+      }
+    });
+
+    // Start button click to start game
+    startButton.addEventListener('click', () => {
+      startGame();
+    });
+    startButton.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        startButton.click();
+      }
+    });
+
+    // Initially, hide game area and scoreboard until start
+    gameContainer.setAttribute('aria-hidden', 'true');
+    timerDisplay.parentElement.setAttribute('aria-hidden', 'true');
+
+    // On page load update last scores UI
+    window.addEventListener('load', () => {
+      updateLastScoresUI();
+    });
+  </script>
+</body>
+</html>
+
